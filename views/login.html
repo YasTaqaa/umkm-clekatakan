@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Admin</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Login Admin</h1>
+    <p>Akses Panel Administrasi</p>
+  </header>
+
+  <main>
+    <div id="admin-access">
+      <p id="message"></p>
+      <input type="password" id="access-code" placeholder="Masukkan Kode Admin" />
+      <button onclick="login()">Masuk</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Admin UMKM</p>
+  </footer>
+
+  <script>
+    async function login() {
+        const code = document.getElementById("access-code").value.trim();
+        const messageElement = document.getElementById("message");
+
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ code }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            localStorage.setItem('adminToken', data.token);
+            window.location.href = '/admin-panel';
+        } else {
+            messageElement.textContent = data.message;
+            messageElement.className = 'error';
+        }
+    }
+  </script>
+</body>
+</html>

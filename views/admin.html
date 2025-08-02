@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Admin Panel</h1>
+    <p>Tambah Produk UMKM</p>
+  </header>
+
+  <main>
+    <div class="controls-container admin-panel">
+      <a href="/" class="button kembali-beranda-button">⬅️ Kembali ke Beranda</a>
+      <button class="button" onclick="logout()">Keluar</button>
+    </div>
+
+    <form id="product-form" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Nama Produk:</label>
+            <input type="text" id="name" name="name" placeholder="Masukkan nama produk" required />
+        </div>
+        <div class="form-group">
+            <label for="description">Deskripsi Produk:</label>
+            <textarea id="description" name="description" placeholder="Masukkan deskripsi produk" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="contact">Kontak:</label>
+            <input type="text" id="contact" name="contact" placeholder="Masukkan kontak (cth: WA)" required />
+        </div>
+        <div class="form-group">
+            <label for="image">Pilih Gambar Produk:</label>
+            <input type="file" id="image" name="image" accept="image/*" required />
+        </div>
+        <button type="submit" class="button">Tambah Produk</button>
+    </form>
+
+    <h2>Daftar Produk</h2>
+    <ul id="product-list"></ul>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Admin UMKM</p>
+  </footer>
+
+  <script src="/admin.js"></script>
+</body>
+</html>
