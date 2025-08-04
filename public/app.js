@@ -3,7 +3,7 @@ const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
 let allProducts = [];
 
-// Fungsi untuk memeriksa apakah URL gambar valid
+//  memeriksa apakah URL gambar valid
 function isValidImageUrl(url) {
   return (
     /^https?:\/\//.test(url) ||
@@ -11,7 +11,7 @@ function isValidImageUrl(url) {
   );
 }
 
-// Fungsi untuk merender produk ke DOM (Halaman Index)
+//  merender produk ke DOM 
 function renderProducts(productsToRender) {
   if (!productList) return;
 
@@ -43,7 +43,7 @@ function renderProducts(productsToRender) {
   });
 }
 
-// Fungsi untuk menampilkan modal detail produk
+//  menampilkan modal detail produk
 function showProductModal(product) {
     const modal = document.getElementById("product-modal");
     const modalImage = document.getElementById("modal-image");
@@ -74,7 +74,7 @@ function showProductModal(product) {
     };
 }
 
-// Fungsi untuk mengambil produk (Halaman Index)
+// mengambil produk
 async function loadProducts() {
   if (!productList) return;
 
@@ -85,7 +85,7 @@ async function loadProducts() {
   renderProducts(allProducts);
 }
 
-// Fungsi pencarian (Halaman Index)
+// Pencarian
 function handleSearch() {
   const searchTerm = searchInput.value.toLowerCase();
   const filteredProducts = allProducts.filter(product => {
@@ -95,7 +95,7 @@ function handleSearch() {
   renderProducts(filteredProducts);
 }
 
-// --- Kode untuk Halaman Admin Panel ---
+//  Admin Panel
 async function loadAdminProducts() {
     const list = document.getElementById("product-list");
     if (!list) return;
@@ -118,7 +118,6 @@ async function loadAdminProducts() {
         list.appendChild(li);
     });
 
-    // Menambahkan event listener untuk tombol hapus setelah list dibuat
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const index = e.target.getAttribute('data-index');
@@ -149,7 +148,7 @@ function logout() {
     window.location.href = '/admin';
 }
 
-// --- Kode untuk Halaman Login ---
+//  Halaman Login 
 async function handleLogin() {
     const code = document.getElementById("access-code").value.trim();
     const messageElement = document.getElementById("message");
@@ -180,9 +179,8 @@ async function handleLogin() {
     }
 }
 
-// Inisialisasi semua event listener setelah DOM selesai dimuat
 document.addEventListener('DOMContentLoaded', () => {
-    // Inisialisasi untuk halaman index.html
+    // Inisialisasi index.html
     if (window.location.pathname === '/' || window.location.pathname.includes('index.html')) {
         const searchInput = document.getElementById("search-input");
         const searchButton = document.getElementById("search-button");
@@ -201,13 +199,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (clearButton) {
             clearButton.addEventListener('click', () => {
                 searchInput.value = '';
-                loadProducts(); // Memuat ulang semua produk dari server
+                loadProducts(); 
             });
         }
         loadProducts();
     }
 
-    // Inisialisasi untuk halaman login.html
+    // Inisialisasi login.html
     else if (window.location.pathname === '/admin' || window.location.pathname.includes('login.html')) {
         const loginButton = document.getElementById("login-button");
         const accessCodeInput = document.getElementById("access-code");
@@ -224,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Inisialisasi untuk halaman admin.html
+    // Inisialisasi admin.html
     else if (window.location.pathname === '/admin-panel' || window.location.pathname.includes('admin.html')) {
         const token = localStorage.getItem('adminToken');
         if (!token) {

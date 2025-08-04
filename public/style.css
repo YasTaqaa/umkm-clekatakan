@@ -1,6 +1,4 @@
-/* ======================== */
-/* 1. Reset dan Base Styles  */
-/* ======================== */
+
 * {
     margin: 0;
     padding: 0;
@@ -8,7 +6,7 @@
 }
 
 body {
-    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Verdana, sans-serif;
     line-height: 1.6;
     color: #2d3748;
     background: linear-gradient(135deg, #f0f4f8 0%, #d8e2ed 100%);
@@ -17,9 +15,8 @@ body {
     flex-direction: column;
 }
 
-/* ======================== */
-/* 2. Header dan Footer  */
-/* ======================== */
+
+/*  Header dan Footer  */
 header {
     background: rgba(255, 255, 255, 0.95);
     color: #2d3748;
@@ -83,9 +80,8 @@ footer p {
     font-size: 0.9rem;
 }
 
-/* ======================== */
-/* 3. Main Content  */
-/* ======================== */
+
+/*  Main Content  */
 main {
     flex: 1;
     padding: 3rem 0;
@@ -94,9 +90,8 @@ main {
     align-items: center;
 }
 
-/* ======================== */
-/* 4. Tombol dan Form  */
-/* ======================== */
+
+/* Tombol dan Form  */
 .button {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -217,9 +212,8 @@ form input[type="file"]:hover {
     background: #edf2f7;
 }
 
-/* ======================== */
-/* 5. Layouts  */
-/* ======================== */
+
+/*  Layouts  */
 .controls-container {
     display: flex;
     justify-content: center;
@@ -283,7 +277,7 @@ form input[type="file"]:hover {
     opacity: 0.9;
 }
 
-/* Grid & Card Styles */
+/* Grid & Card */
 .grid-container {
     display: flex;
     flex-wrap: wrap;
@@ -383,7 +377,7 @@ form input[type="file"]:hover {
     box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* --- Admin Panel List Styles --- */
+/*  Admin Panel List  */
 .admin-panel #product-list {
     list-style: none;
     max-width: 800px;
@@ -434,9 +428,8 @@ form input[type="file"]:hover {
     box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
 }
 
-/* ======================== */
-/* 6. Login Form  */
-/* ======================== */
+
+/*  Login Form  */
 .login-form-container {
     background: rgba(255, 255, 255, 0.95);
     padding: 3rem;
@@ -499,9 +492,8 @@ form input[type="file"]:hover {
     width: 100%;
 }
 
-/* ======================== */
-/* 7. Modal Styles  */
-/* ======================== */
+
+/*  Modal  */
 .modal {
   display: none;
   position: fixed;
@@ -570,7 +562,6 @@ form input[type="file"]:hover {
   text-decoration: none;
 }
 
-/* Gaya untuk ikon WhatsApp Font Awesome */
 .fa-whatsapp {
     color: #25D366;
     font-size: 1.2em;
@@ -578,9 +569,8 @@ form input[type="file"]:hover {
     margin-right: 5px;
 }
 
-/* ======================== */
-/* 8. Responsive Design  */
-/* ======================== */
+
+/*  Responsive   */
 @media (max-width: 768px) {
     .controls-container {
         flex-direction: column;
