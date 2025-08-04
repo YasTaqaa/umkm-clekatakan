@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Panel</title>
   <link rel="stylesheet" href="/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
@@ -12,10 +15,10 @@
     <p>Tambah Produk UMKM</p>
   </header>
 
-  <main>
-    <div class="controls-container admin-panel">
+  <main class="admin-panel">
+    <div class="controls-container">
       <a href="/" class="button kembali-beranda-button">⬅️ Kembali ke Beranda</a>
-      <button class="button" onclick="logout()">Keluar</button>
+      <button class="button" id="logout-button">Keluar</button>
     </div>
 
     <form id="product-form" enctype="multipart/form-data">
@@ -46,6 +49,6 @@
     <p>&copy; 2025 Admin UMKM</p>
   </footer>
 
-  <script src="/admin.js"></script>
+  <script src="/app.js"></script>
 </body>
 </html>

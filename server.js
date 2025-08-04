@@ -110,7 +110,6 @@ app.get('/api/products', (req, res) => {
     res.json(products);
 });
 
-// Perbaikan: Mengganti "category" menjadi "description"
 app.post('/api/products', verifyToken, upload.single('image'), (req, res) => {
     const { name, description, contact } = req.body;
 

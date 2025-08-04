@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login Admin</title>
   <link rel="stylesheet" href="/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
@@ -13,10 +16,13 @@
   </header>
 
   <main>
-    <div id="admin-access">
-      <p id="message"></p>
-      <input type="password" id="access-code" placeholder="Masukkan Kode Admin" />
-      <button onclick="login()">Masuk</button>
+    <div id="admin-access" class="login-form-container">
+      <p id="message" class="message"></p>
+      <div class="form-group">
+        <label for="access-code">Kode Admin</label>
+        <input type="password" id="access-code" placeholder="Masukkan Kode Admin" autocomplete="current-password" required />
+      </div>
+      <button class="button" id="login-button">Masuk</button>
     </div>
   </main>
 
@@ -24,29 +30,6 @@
     <p>&copy; 2025 Admin UMKM</p>
   </footer>
 
-  <script>
-    async function login() {
-        const code = document.getElementById("access-code").value.trim();
-        const messageElement = document.getElementById("message");
-
-        const response = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ code }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            localStorage.setItem('adminToken', data.token);
-            window.location.href = '/admin-panel';
-        } else {
-            messageElement.textContent = data.message;
-            messageElement.className = 'error';
-        }
-    }
-  </script>
+  <script src="/app.js"></script>
 </body>
 </html>
