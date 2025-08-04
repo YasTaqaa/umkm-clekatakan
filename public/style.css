@@ -29,21 +29,42 @@ header {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-header h1 {
+header {
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: relative;
+    padding: 0;
+}
+
+.header-image-container {
+    background: url('/images/headerbg.jpg') no-repeat center center/cover;
+    position: relative;
+    width: 100%;
+    min-height: 250px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.header-text-overlay {
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); 
+}
+
+.header-image-container h1 {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.02em;
+    color: white; 
+    -webkit-text-fill-color: initial;
 }
 
-header p {
+.header-image-container p {
     font-size: 1.2rem;
-    color: #4a5568;
-    opacity: 0.8;
+    color: white;
+    opacity: 1;
     font-weight: 400;
 }
 
