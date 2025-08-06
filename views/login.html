@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <header>
@@ -22,9 +23,10 @@
   <main>
     <div id="admin-access" class="login-form-container">
       <p id="message" class="message"></p>
-      <div class="form-group">
+      <div class="form-group password-container">
         <label for="access-code">Kode Admin</label>
         <input type="password" id="access-code" placeholder="Masukkan Kode Admin" autocomplete="current-password" required />
+        <i class="fas fa-eye-slash toggle-password" id="toggle-password"></i>
       </div>
       <button class="button" id="login-button">Masuk</button>
     </div>

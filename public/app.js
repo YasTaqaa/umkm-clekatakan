@@ -209,6 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (window.location.pathname === '/admin' || window.location.pathname.includes('login.html')) {
         const loginButton = document.getElementById("login-button");
         const accessCodeInput = document.getElementById("access-code");
+        const togglePassword = document.getElementById('toggle-password');
 
         if (loginButton) {
             loginButton.addEventListener('click', handleLogin);
@@ -219,6 +220,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     handleLogin();
                 }
             });
+        }
+        if (togglePassword && accessCodeInput) {
+          togglePassword.addEventListener('click', function (e) {
+            const type = accessCodeInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            accessCodeInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+          });
         }
     }
 
