@@ -145,7 +145,7 @@ async function deleteProduct(index) {
 
 function logout() {
     localStorage.removeItem('adminToken');
-    window.location.href = '/admin';
+    window.location.href = '/'; // Mengubah redirect ke halaman utama
 }
 
 //  Halaman Login 
@@ -185,7 +185,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchInput = document.getElementById("search-input");
         const searchButton = document.getElementById("search-button");
         const clearButton = document.getElementById("clear-button");
+        const tambahProdukLink = document.getElementById("tambah-produk-link");
+        const token = localStorage.getItem('adminToken');
 
+        if (tambahProdukLink && token) {
+            tambahProdukLink.href = '/admin-panel';
+        }
+        
         if (searchButton) {
             searchButton.addEventListener('click', handleSearch);
         }
