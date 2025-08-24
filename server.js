@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'views')));
 
-// Konfigurasi Multer
+// Konfigurasi Multer - Updated for multiple files
 const uploadDir = path.join(__dirname, 'public/uploads');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -112,15 +112,20 @@ app.get('/api/products', (req, res) => {
     res.json(products);
 });
 
-app.post('/api/products', verifyToken, upload.single('image'), (req, res) => {
+// Updated route for multiple images (max 5)
+app.post('/api/products', verifyToken, upload.array('images', 5), (req, res) => {
     const { name, description, contact } = req.body;
 
-    if (!name || !description || !contact || !req.file) {
-        return res.status(400).json({ success: false, message: "Semua field harus diisi." });
+    if (!name || !description || !contact || !req.files || req.files.length === 0) {
+        return res.status(400).json({ success: false, message: "Semua field harus diisi dan minimal 1 gambar harus diunggah." });
     }
 
-    const imageUrl = `/uploads/${req.file.filename}`;
-    const newProduct = { name, description, contact, image: imageUrl };
+    if (req.files.length > 5) {
+        return res.status(400).json({ success: false, message: "Maksimal 5 gambar yang dapat diunggah." });
+    }
+
+    const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
+    const newProduct = { name, description, contact, images: imageUrls };
     const products = readProducts();
     products.push(newProduct);
     writeProducts(products);
@@ -135,16 +140,21 @@ app.delete('/api/products/:index', verifyToken, (req, res) => {
         return res.status(404).json({ success: false, message: "Indeks produk tidak valid." });
     }
 
-    const imageToDelete = products[index].image;
+    const productToDelete = products[index];
 
     products.splice(index, 1);
     writeProducts(products);
 
-    if (imageToDelete && imageToDelete.startsWith('/uploads/')) {
-        const imagePath = path.join(__dirname, 'public', imageToDelete);
-        fs.unlink(imagePath, (err) => {
-            if (err) {
-                console.error("Gagal menghapus file gambar:", err);
+    // Delete all images associated with the product
+    if (productToDelete.images && Array.isArray(productToDelete.images)) {
+        productToDelete.images.forEach(imageUrl => {
+            if (imageUrl && imageUrl.startsWith('/uploads/')) {
+                const imagePath = path.join(__dirname, 'public', imageUrl);
+                fs.unlink(imagePath, (err) => {
+                    if (err) {
+                        console.error("Gagal menghapus file gambar:", err);
+                    }
+                });
             }
         });
     }

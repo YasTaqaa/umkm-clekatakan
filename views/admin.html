@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body class="admin-panel-body">
@@ -15,7 +15,7 @@
         <div class="header-image-container">
             <div class="header-text-overlay">
                 <h1>Panel Admin</h1>
-                <p>Manajemen Produk UMKM</p>
+                <p>Manajemen Produk</p>
             </div>
         </div>
     </header>
@@ -41,8 +41,11 @@
                     <input type="tel" id="contact" name="contact" placeholder="Contoh: 6281234567890" pattern="[0-9]{10,15}" required>
                 </div>
                 <div class="form-group">
-                    <label for="image">Gambar Produk</label>
-                    <input type="file" id="image" name="image" accept="image/jpeg,image/png,image/gif" required>
+                    <label for="images">Gambar Produk (Maksimal 5 gambar)</label>
+                    <input type="file" id="images" name="images" accept="image/jpeg,image/png,image/gif" multiple required>
+                    <div class="file-info">
+                        <small>Pilih 1-5 gambar. Format yang didukung: JPG/JPEG, PNG, GIF</small>
+                    </div>
                 </div>
                 <button type="submit" class="button btn-tambah">Tambah Produk</button>
             </form>
@@ -50,11 +53,11 @@
 
         <h2 class="section-title">Daftar Produk</h2>
         <ul id="product-list">
-            </ul>
+        </ul>
     </main>
 
     <footer>
-        <p>&copy; 2025 UMKM Clekatakan</p>
+        <p>&copy; KKN UMP 2025 Desa Clekatakan</p>
     </footer>
 
     <script src="/app.js"></script>

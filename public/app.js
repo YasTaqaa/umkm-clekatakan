@@ -27,11 +27,21 @@ function renderProducts(productsToRender) {
     card.className = "card";
     card.addEventListener('click', () => showProductModal(product));
 
-    const imageUrl = product.image;
-
-    const imageTag = isValidImageUrl(imageUrl)
-      ? `<img src="${imageUrl}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/><div class="no-image" style="display: none;">[Gambar tidak dapat dimuat]</div>`
-      : `<div class="no-image">[Gambar tidak tersedia]</div>`;
+    // Handle multiple images - show first image or fallback
+    let imageTag;
+    if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+      const firstImage = product.images[0];
+      imageTag = isValidImageUrl(firstImage)
+        ? `<img src="${firstImage}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/><div class="no-image" style="display: none;">[Gambar tidak dapat dimuat]</div>`
+        : `<div class="no-image">[Gambar tidak tersedia]</div>`;
+    } else if (product.image) {
+      // Backward compatibility with single image
+      imageTag = isValidImageUrl(product.image)
+        ? `<img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"/><div class="no-image" style="display: none;">[Gambar tidak dapat dimuat]</div>`
+        : `<div class="no-image">[Gambar tidak tersedia]</div>`;
+    } else {
+      imageTag = `<div class="no-image">[Gambar tidak tersedia]</div>`;
+    }
 
     card.innerHTML = `
       ${imageTag}
@@ -43,17 +53,68 @@ function renderProducts(productsToRender) {
   });
 }
 
-//  menampilkan modal detail produk
+//  menampilkan modal detail produk dengan multiple images
 function showProductModal(product) {
     const modal = document.getElementById("product-modal");
-    const modalImage = document.getElementById("modal-image");
+    const modalImageContainer = document.getElementById("modal-image-container");
     const modalName = document.getElementById("modal-name");
     const modalDescription = document.getElementById("modal-description");
     const modalContact = document.getElementById("modal-contact");
     const closeButton = document.querySelector(".close-button");
 
-    modalImage.src = product.image;
-    modalImage.alt = product.name;
+    // Clear previous images
+    modalImageContainer.innerHTML = "";
+
+    // Handle multiple images
+    if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+        // Create image gallery
+        const imageGallery = document.createElement("div");
+        imageGallery.className = "image-gallery";
+        
+        // Main image display
+        const mainImageDiv = document.createElement("div");
+        mainImageDiv.className = "main-image";
+        const mainImage = document.createElement("img");
+        mainImage.src = product.images[0];
+        mainImage.alt = product.name;
+        mainImage.id = "main-modal-image";
+        mainImageDiv.appendChild(mainImage);
+        
+        // Thumbnails container (only show if more than 1 image)
+        if (product.images.length > 1) {
+            const thumbnailsDiv = document.createElement("div");
+            thumbnailsDiv.className = "image-thumbnails";
+            
+            product.images.forEach((imageUrl, index) => {
+                const thumbnail = document.createElement("img");
+                thumbnail.src = imageUrl;
+                thumbnail.alt = `${product.name} - Image ${index + 1}`;
+                thumbnail.className = `thumbnail ${index === 0 ? 'active' : ''}`;
+                thumbnail.onclick = () => {
+                    mainImage.src = imageUrl;
+                    // Update active thumbnail
+                    thumbnailsDiv.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    thumbnail.classList.add('active');
+                };
+                thumbnailsDiv.appendChild(thumbnail);
+            });
+            
+            imageGallery.appendChild(mainImageDiv);
+            imageGallery.appendChild(thumbnailsDiv);
+        } else {
+            imageGallery.appendChild(mainImageDiv);
+        }
+        
+        modalImageContainer.appendChild(imageGallery);
+    } else if (product.image) {
+        // Backward compatibility with single image
+        const singleImage = document.createElement("img");
+        singleImage.src = product.image;
+        singleImage.alt = product.name;
+        singleImage.className = "single-modal-image";
+        modalImageContainer.appendChild(singleImage);
+    }
+
     modalName.textContent = product.name;
     modalDescription.textContent = product.description;
     modalContact.innerHTML = `
@@ -111,8 +172,12 @@ async function loadAdminProducts() {
 
     data.forEach((product, index) => {
         const li = document.createElement("li");
+        const imageCount = product.images ? product.images.length : (product.image ? 1 : 0);
         li.innerHTML = `
-            <strong>${product.name}</strong> - ${product.description.substring(0, 50)}...
+            <div class="product-info">
+                <strong>${product.name}</strong> - ${product.description.substring(0, 50)}...
+                <br><small>${imageCount} gambar</small>
+            </div>
             <button class="delete-btn" data-index="${index}" style="margin-left: 10px;">🗑️</button>
         `;
         list.appendChild(li);
@@ -246,12 +311,43 @@ document.addEventListener('DOMContentLoaded', () => {
         loadAdminProducts();
 
         const productForm = document.getElementById("product-form");
+        const imageInput = document.getElementById("images");
+        
+        // Add file validation for multiple images
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const files = e.target.files;
+                if (files.length > 5) {
+                    alert('Maksimal 5 gambar yang dapat dipilih!');
+                    e.target.value = ''; // Clear the selection
+                    return;
+                }
+                
+                // Optional: Show file count feedback
+                const fileInfo = document.querySelector('.file-info small');
+                if (fileInfo) {
+                    fileInfo.textContent = files.length > 0 
+                        ? `${files.length} gambar dipilih. Format yang didukung: JPEG, PNG, GIF`
+                        : 'Pilih 1-5 gambar. Format yang didukung: JPEG, PNG, GIF';
+                }
+            });
+        }
+
         if (productForm) {
             productForm.addEventListener("submit", async function (e) {
                 e.preventDefault();
 
                 const form = e.target;
                 const formData = new FormData(form);
+                
+                // Get all selected files
+                const imageFiles = imageInput.files;
+                
+                // Clear any existing 'images' entries and add all files
+                formData.delete('images');
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append('images', imageFiles[i]);
+                }
 
                 const token = localStorage.getItem('adminToken');
                 const response = await fetch('/api/products', {
@@ -265,7 +361,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
                 if (data.success) {
                     this.reset();
+                    // Reset file info text
+                    const fileInfo = document.querySelector('.file-info small');
+                    if (fileInfo) {
+                        fileInfo.textContent = 'Pilih 1-5 gambar. Format yang didukung: JPEG, PNG, GIF';
+                    }
                     loadAdminProducts();
+                    alert('Produk berhasil ditambahkan!');
                 } else {
                     alert(data.message);
                 }

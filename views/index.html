@@ -1,53 +1,56 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Katalog Produk UMKM Desa Clekatakan</title>
-  <link rel="stylesheet" href="/style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produk Lokal Desa Clekatakan</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-  <header>
-    <div class="header-image-container">
-      <div class="header-text-overlay">
-        <h1>Katalog Produk UMKM</h1>
-        <p>Desa Clekatakan</p>
-      </div>
+    <header>
+        <div class="header-image-container">
+            <div class="header-text-overlay">
+                <h1>KATALOG PRODUK</h1>
+                <p>Temukan produk berkualitas</p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="controls-container">
+            <a href="/admin" class="button btn-tambah" id="tambah-produk-link">Tambah Produk</a>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Cari produk...">
+            <button id="search-button" class="button">Cari</button>
+            <button id="clear-button" class="button">Reset</button>
+        </div>
+
+        <div class="grid-container">
+            <div id="product-cards"></div>
+        </div>
+    </main>
+
+    <!-- Modal untuk detail produk -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modal-image-container"></div>
+            <h3 id="modal-name"></h3>
+            <p><strong>Deskripsi:</strong> <span id="modal-description"></span></p>
+            <p><strong>Kontak:</strong> <span id="modal-contact"></span></p>
+        </div>
     </div>
-  </header>
 
-  <main>
-    <div class="top-bar">
-      <a href="/admin" class="btn-tambah" id="tambah-produk-link">+ Tambah Produk</a>
-    </div>
+    <footer>
+        <p>&copy; KKN UMP 2025 Desa Clekatakan</p>
+    </footer>
 
-    <div class="search-container">
-      <input type="text" id="search-input" placeholder="Cari produk..." />
-      <button id="search-button" class="button-icon">Cari</button>
-      <button id="clear-button" class="button-icon">Bersihkan</button>
-    </div>
-
-    <div id="product-cards" class="grid-container"></div>
-  </main>
-
-  <footer>
-    <p>&copy; 2025 UMKM Clekatakan</p>
-  </footer>
-
-  <div id="product-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-button">&times;</span>
-      <img id="modal-image" src="" alt="Gambar Produk"/>
-      <h3 id="modal-name"></h3>
-      <p><strong>Deskripsi:</strong> <span id="modal-description"></span></p>
-      <p><strong>Kontak:</strong> <span id="modal-contact"></span></p>
-    </div>
-  </div>
-
-  <script src="/app.js"></script>
+    <script src="/app.js"></script>
 </body>
 </html>

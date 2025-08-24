@@ -14,17 +14,7 @@ body {
     flex-direction: column;
 }
 
-
-/* Header dan Footer  */
-header {
-    background: rgba(255, 255, 255, 0.95);
-    color: #2d3748;
-    text-align: center;
-    padding: 2rem 20px;
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
+/* Header dan Footer */
 header {
     text-align: center;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.05);
@@ -34,7 +24,7 @@ header {
 }
 
 .header-image-container {
-    background: url('/images/headerbg.jpg') no-repeat center center/cover;
+    background: url('/images/headerprdk.jpeg') no-repeat center center/cover;
     position: relative;
     width: 100%;
     min-height: 250px; 
@@ -45,12 +35,13 @@ header {
 }
 
 .header-text-overlay {
+    font-family: 'Montserrat';
     text-align: center;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5); 
 }
 
 .header-image-container h1 {
-    font-size: 2.5rem;
+    font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     color: white; 
@@ -58,7 +49,7 @@ header {
 }
 
 .header-image-container p {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     color: white;
     opacity: 1;
     font-weight: 400;
@@ -79,8 +70,7 @@ footer p {
     font-size: 0.9rem;
 }
 
-
-/* Main Content  */
+/* Main Content */
 main {
     flex: 1;
     padding: 3rem 0;
@@ -89,10 +79,9 @@ main {
     align-items: center;
 }
 
-
-/* Tombol dan Form  */
+/* Tombol dan Form */
 .button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
     color: white;
     border: none;
     padding: 14px 28px;
@@ -211,8 +200,16 @@ form input[type="file"]:hover {
     background: #edf2f7;
 }
 
+.file-info {
+    margin-top: 0.5rem;
+}
 
-/* Layouts  */
+.file-info small {
+    color: #718096;
+    font-style: italic;
+}
+
+/* Layouts */
 .controls-container {
     display: flex;
     justify-content: center;
@@ -255,15 +252,15 @@ form input[type="file"]:hover {
 
 .search-container input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+    border-color: #48bb78;
+    box-shadow: 0 0 0 4px rgba(72, 187, 120, 0.15);
     background: white;
 }
 
 .search-container button {
     padding: 12px 24px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
     color: white;
     font-size: 1rem;
     font-weight: 600;
@@ -376,7 +373,7 @@ form input[type="file"]:hover {
     box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* Admin Panel List  */
+/* Admin Panel List */
 .admin-panel #product-list {
     list-style: none;
     max-width: 800px;
@@ -404,6 +401,10 @@ form input[type="file"]:hover {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+.admin-panel #product-list .product-info {
+    flex-grow: 1;
+}
+
 .admin-panel #product-list li strong {
     font-weight: 700;
     color: #2d3748;
@@ -427,8 +428,7 @@ form input[type="file"]:hover {
     box-shadow: 0 6px 20px rgba(229, 62, 62, 0.4);
 }
 
-
-/* Login Form  */
+/* Login Form */
 .login-form-container {
     background: rgba(255, 255, 255, 0.95);
     padding: 3rem;
@@ -513,8 +513,7 @@ form input[type="file"]:hover {
     width: 100%;
 }
 
-
-/* Modal  */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
@@ -535,18 +534,63 @@ form input[type="file"]:hover {
   margin: auto;
   padding: 30px;
   border-radius: 15px;
-  max-width: 600px;
+  max-width: 700px;
   width: 90%;
   position: relative;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-.modal-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
+/* Image Gallery Styles */
+.image-gallery {
     margin-bottom: 20px;
+}
+
+.main-image {
+    margin-bottom: 15px;
+}
+
+.main-image img,
+.single-modal-image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.image-thumbnails {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px 0;
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.thumbnail:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.thumbnail.active {
+    border-color: #667eea;
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
 }
 
 .modal-content h3 {
@@ -590,8 +634,7 @@ form input[type="file"]:hover {
     margin-right: 5px;
 }
 
-
-/* Responsive   */
+/* Responsive */
 @media (max-width: 768px) {
     .controls-container {
         flex-direction: column;
@@ -631,14 +674,28 @@ form input[type="file"]:hover {
     .no-products-container {
         padding: 3rem 20px;
     }
+    
+    .modal-content {
+        max-width: 95%;
+        padding: 20px;
+    }
+    
+    .thumbnail {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .image-thumbnails {
+        gap: 8px;
+    }
 }
 
 @media (max-width: 480px) {
-    header h1 {
+    .header-image-container h1 {
         font-size: 2rem;
     }
 
-    header p {
+    .header-image-container p {
         font-size: 1rem;
     }
     
@@ -690,5 +747,23 @@ form input[type="file"]:hover {
         font-size: 1rem;
         padding: 1.5rem;
         border-radius: 8px;
+    }
+    
+    .modal-content {
+        padding: 15px;
+        max-width: 98%;
+    }
+    
+    .main-image img {
+        max-height: 250px;
+    }
+    
+    .thumbnail {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .image-thumbnails {
+        gap: 5px;
     }
 }
