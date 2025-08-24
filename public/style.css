@@ -707,10 +707,6 @@ form input[type="file"]:hover {
         gap: 1rem;
     }
 
-    .card {
-        flex-basis: 100%;
-    }
-
     .card img {
         height: 180px;
     }
