@@ -56,7 +56,7 @@ const upload = multer({
             cb(new Error('Hanya file gambar (jpeg, png, gif) yang diizinkan!'), false);
         }
     },
-    limits: { fileSize: 1024 * 1024 * 5 } // 5MB limit
+    limits: { fileSize: 1024 * 1024 * 10 } // Batas ukuran file diubah menjadi 10MB
 });
 
 // Middleware

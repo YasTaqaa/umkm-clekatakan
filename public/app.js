@@ -312,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const productForm = document.getElementById("product-form");
         const imageInput = document.getElementById("images");
+        const submitButton = productForm.querySelector('.btn-tambah');
         
         // Add file validation for multiple images
         if (imageInput) {
@@ -337,13 +338,16 @@ document.addEventListener('DOMContentLoaded', () => {
             productForm.addEventListener("submit", async function (e) {
                 e.preventDefault();
 
+                // Tampilkan loading dan nonaktifkan tombol
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Memproses...';
+                submitButton.classList.add('loading');
+
                 const form = e.target;
                 const formData = new FormData(form);
                 
-                // Get all selected files
                 const imageFiles = imageInput.files;
                 
-                // Clear any existing 'images' entries and add all files
                 formData.delete('images');
                 for (let i = 0; i < imageFiles.length; i++) {
                     formData.append('images', imageFiles[i]);
@@ -358,10 +362,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: formData,
                 });
 
+                // Sembunyikan loading dan aktifkan kembali tombol
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Tambah Produk';
+                submitButton.classList.remove('loading');
+
                 const data = await response.json();
                 if (data.success) {
                     this.reset();
-                    // Reset file info text
                     const fileInfo = document.querySelector('.file-info small');
                     if (fileInfo) {
                         fileInfo.textContent = 'Pilih 1-5 gambar. Format yang didukung: JPEG, PNG, GIF';
