@@ -1,3 +1,5 @@
+import imageCompression from 'https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js';
+
 const productList = document.getElementById("product-cards");
 const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
@@ -343,14 +345,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitButton.innerHTML = 'Memproses...';
                 submitButton.classList.add('loading');
 
-                const form = e.target;
-                const formData = new FormData(form);
+                const formData = new FormData();
                 
                 const imageFiles = imageInput.files;
-                
-                formData.delete('images');
+                const compressedFiles = [];
+                const compressionOptions = {
+                    maxSizeMB: 1, // Ukuran maksimal file setelah kompresi (dalam MB)
+                    maxWidthOrHeight: 1920, // Dimensi maksimal
+                    useWebWorker: true
+                };
+
                 for (let i = 0; i < imageFiles.length; i++) {
-                    formData.append('images', imageFiles[i]);
+                    const file = imageFiles[i];
+                    try {
+                        const compressedFile = await imageCompression(file, compressionOptions);
+                        compressedFiles.push(compressedFile);
+                    } catch (error) {
+                        // Sembunyikan loading dan aktifkan kembali tombol
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = 'Tambah Produk';
+                        submitButton.classList.remove('loading');
+                        alert('Gagal mengompres gambar. Coba lagi.');
+                        console.error('Kompresi gambar gagal:', error);
+                        return;
+                    }
+                }
+
+                for (let i = 0; i < compressedFiles.length; i++) {
+                    formData.append('images', compressedFiles[i], compressedFiles[i].name);
                 }
 
                 const token = localStorage.getItem('adminToken');
