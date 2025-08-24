@@ -170,30 +170,30 @@ async function loadAdminProducts() {
         return;
     }
 
-    data.forEach((product, index) => {
+    data.forEach((product) => {
         const li = document.createElement("li");
-        const imageCount = product.images ? product.images.length : (product.image ? 1 : 0);
+        const imageCount = product.images ? product.images.length : 0;
         li.innerHTML = `
             <div class="product-info">
                 <strong>${product.name}</strong> - ${product.description.substring(0, 50)}...
                 <br><small>${imageCount} gambar</small>
             </div>
-            <button class="delete-btn" data-index="${index}" style="margin-left: 10px;">🗑️</button>
+            <button class="delete-btn" data-id="${product._id}" style="margin-left: 10px;">🗑️</button>
         `;
         list.appendChild(li);
     });
 
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', (e) => {
-            const index = e.target.getAttribute('data-index');
-            deleteProduct(index);
+            const productId = e.target.getAttribute('data-id');
+            deleteProduct(productId);
         });
     });
 }
 
-async function deleteProduct(index) {
+async function deleteProduct(productId) {
     const token = localStorage.getItem('adminToken');
-    const response = await fetch(`/api/products/${index}`, {
+    const response = await fetch(`/api/products/${productId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`

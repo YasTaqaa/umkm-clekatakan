@@ -1,8 +1,11 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
+const mongoose = require('mongoose');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const fs = require('fs');
 
 require('dotenv').config();
 
@@ -11,27 +14,39 @@ const PORT = process.env.PORT || 3000;
 const ACCESS_CODE = process.env.ACCESS_CODE;
 const JWT_SECRET = process.env.JWT_SECRET || "super_rahasia_dan_sulit_ditebak_karena_ini_penting";
 
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'views')));
+// Koneksi ke MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log("Terhubung ke MongoDB!"))
+    .catch(err => console.error("Koneksi MongoDB gagal:", err));
 
-// Konfigurasi Multer
-const uploadDir = path.join(__dirname, 'public/uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const fileExtension = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix + fileExtension);
-    }
+// Konfigurasi Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+// Skema Mongoose untuk produk
+const productSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    contact: { type: String, required: true },
+    images: [{ type: String, required: true }],
+    createdAt: { type: Date, default: Date.now }
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+// Konfigurasi Cloudinary Storage untuk Multer
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'umkm-clekatakan',
+        format: async (req, file) => 'png',
+        public_id: (req, file) => `${file.originalname}-${Date.now()}`
+    },
+});
+
 const upload = multer({ 
     storage: storage,
     fileFilter: (req, file, cb) => {
@@ -41,30 +56,14 @@ const upload = multer({
             cb(new Error('Hanya file gambar (jpeg, png, gif) yang diizinkan!'), false);
         }
     },
-    limits: { fileSize: 1024 * 1024 * 5 }
+    limits: { fileSize: 1024 * 1024 * 5 } // 5MB limit
 });
 
-// File produk
-const productsFilePath = path.join(__dirname, 'products.json');
-
-const readProducts = () => {
-    try {
-        if (!fs.existsSync(productsFilePath)) return [];
-        const data = fs.readFileSync(productsFilePath, 'utf8');
-        return data.trim() ? JSON.parse(data) : [];
-    } catch (error) {
-        console.error("Gagal membaca products.json:", error);
-        return [];
-    }
-};
-
-const writeProducts = (products) => {
-    try {
-        fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2), 'utf8');
-    } catch (error) {
-        console.error("Gagal menulis products.json:", error);
-    }
-};
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'views')));
 
 // Login
 app.post('/api/login', (req, res) => {
@@ -93,45 +92,63 @@ const verifyToken = (req, res, next) => {
 };
 
 // API Produk
-app.get('/api/products', (req, res) => {
-    res.json(readProducts());
+app.get('/api/products', async (req, res) => {
+    try {
+        const products = await Product.find().sort({ createdAt: -1 });
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: "Gagal mengambil produk." });
+    }
 });
 
-app.post('/api/products', verifyToken, upload.array('images', 5), (req, res) => {
+app.post('/api/products', verifyToken, upload.array('images', 5), async (req, res) => {
     const { name, description, contact } = req.body;
-    if (!name || !description || !contact || !req.files?.length) {
+    if (!name || !description || !contact || !req.files || req.files.length === 0) {
         return res.status(400).json({ success: false, message: "Semua field wajib diisi dan minimal 1 gambar diunggah." });
     }
+    
+    // Hapus file sementara yang mungkin dibuat oleh multer (jika ada)
+    req.files.forEach(file => {
+        if (file.path && fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+        }
+    });
 
-    const imageUrls = req.files.map(file => `/uploads/${file.filename}`);
-    const products = readProducts();
-    products.push({ name, description, contact, images: imageUrls });
-    writeProducts(products);
+    const imageUrls = req.files.map(file => file.path); // Cloudinary URL ada di `file.path`
 
-    res.json({ success: true, message: "Produk berhasil ditambahkan." });
+    const newProduct = new Product({
+        name,
+        description,
+        contact,
+        images: imageUrls
+    });
+
+    try {
+        await newProduct.save();
+        res.status(201).json({ success: true, message: "Produk berhasil ditambahkan." });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Gagal menyimpan produk." });
+    }
 });
 
-app.delete('/api/products/:index', verifyToken, (req, res) => {
-    const index = parseInt(req.params.index, 10);
-    const products = readProducts();
+app.delete('/api/products/:id', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const product = await Product.findByIdAndDelete(id);
+        if (!product) {
+            return res.status(404).json({ success: false, message: "Produk tidak ditemukan." });
+        }
+        
+        // Hapus gambar dari Cloudinary
+        for (const imageUrl of product.images) {
+            const publicId = imageUrl.split('/').pop().split('.')[0];
+            await cloudinary.uploader.destroy(`umkm-clekatakan/${publicId}`);
+        }
 
-    if (isNaN(index) || index < 0 || index >= products.length) {
-        return res.status(404).json({ success: false, message: "Indeks produk tidak valid." });
+        res.json({ success: true, message: "Produk berhasil dihapus." });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Gagal menghapus produk." });
     }
-
-    const product = products.splice(index, 1)[0];
-    writeProducts(products);
-
-    if (product.images) {
-        product.images.forEach(imageUrl => {
-            const imagePath = path.join(__dirname, 'public', imageUrl);
-            fs.unlink(imagePath, err => {
-                if (err) console.error("Gagal hapus gambar:", err);
-            });
-        });
-    }
-
-    res.json({ success: true, message: "Produk berhasil dihapus." });
 });
 
 // Halaman statis
