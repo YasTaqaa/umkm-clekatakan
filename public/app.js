@@ -3,7 +3,7 @@ const searchInput = document.getElementById("search-input");
 const searchButton = document.getElementById("search-button");
 let allProducts = [];
 
-//  memeriksa apakah URL gambar valid
+// memeriksa apakah URL gambar valid
 function isValidImageUrl(url) {
   return (
     /^https?:\/\//.test(url) ||
@@ -11,7 +11,7 @@ function isValidImageUrl(url) {
   );
 }
 
-//  merender produk ke DOM 
+// merender produk ke DOM 
 function renderProducts(productsToRender) {
   if (!productList) return;
 
@@ -53,7 +53,7 @@ function renderProducts(productsToRender) {
   });
 }
 
-//  menampilkan modal detail produk dengan multiple images
+// menampilkan modal detail produk dengan multiple images
 function showProductModal(product) {
     const modal = document.getElementById("product-modal");
     const modalImageContainer = document.getElementById("modal-image-container");
@@ -156,7 +156,7 @@ function handleSearch() {
   renderProducts(filteredProducts);
 }
 
-//  Admin Panel
+// Admin Panel
 async function loadAdminProducts() {
     const list = document.getElementById("product-list");
     if (!list) return;
@@ -213,7 +213,7 @@ function logout() {
     window.location.href = '/'; // Mengubah redirect ke halaman utama
 }
 
-//  Halaman Login 
+// Halaman Login 
 async function handleLogin() {
     const code = document.getElementById("access-code").value.trim();
     const messageElement = document.getElementById("message");
@@ -354,30 +354,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const token = localStorage.getItem('adminToken');
-                const response = await fetch('/api/products', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: formData,
-                });
+                
+                try {
+                    const response = await fetch('/api/products', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: formData,
+                    });
 
-                // Sembunyikan loading dan aktifkan kembali tombol
-                submitButton.disabled = false;
-                submitButton.innerHTML = 'Tambah Produk';
-                submitButton.classList.remove('loading');
-
-                const data = await response.json();
-                if (data.success) {
-                    this.reset();
-                    const fileInfo = document.querySelector('.file-info small');
-                    if (fileInfo) {
-                        fileInfo.textContent = 'Pilih 1-5 gambar. Format yang didukung: JPEG, PNG, GIF';
+                    // Periksa apakah respons dari server tidak oke (misalnya, status 400 atau 500)
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Terjadi kesalahan pada server. Coba lagi.');
                     }
-                    loadAdminProducts();
-                    alert('Produk berhasil ditambahkan!');
-                } else {
-                    alert(data.message);
+
+                    const data = await response.json();
+
+                    // Sembunyikan loading dan aktifkan kembali tombol
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Tambah Produk';
+                    submitButton.classList.remove('loading');
+
+                    if (data.success) {
+                        this.reset();
+                        const fileInfo = document.querySelector('.file-info small');
+                        if (fileInfo) {
+                            fileInfo.textContent = 'Pilih 1-5 gambar. Format yang didukung: JPEG, PNG, GIF';
+                        }
+                        loadAdminProducts();
+                        alert('Produk berhasil ditambahkan!');
+                    } else {
+                        alert(data.message);
+                    }
+                } catch (error) {
+                    // Sembunyikan loading dan aktifkan kembali tombol
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Tambah Produk';
+                    submitButton.classList.remove('loading');
+                    
+                    // Tampilkan pesan error yang lebih spesifik
+                    alert('Gagal mengunggah: ' + error.message);
+                    console.error('Error:', error);
                 }
             });
         }
